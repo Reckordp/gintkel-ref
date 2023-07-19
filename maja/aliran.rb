@@ -13,8 +13,32 @@ module Gintkel
 end
 
 class PembacaEnvironment < Executor
-	def [](nEnv)
-		return daftar[nEnv]
+	def root
+		return @daftar[0]
+	end
+
+	def name
+		return @daftar[1]
+	end
+
+	def os
+		return @daftar[2]
+	end
+
+	def mount
+		return @daftar[3]
+	end
+
+	def home
+		return @daftar[4]
+	end
+
+	def arch
+		return @daftar[5]
+	end
+
+	def label
+		return @daftar[6]
 	end
 
 	def persiapan
@@ -23,16 +47,32 @@ class PembacaEnvironment < Executor
 			COMPUTERNAME
 			OS
 			HOMEDRIVE
-			HOMEPATH
+			USERPROFILE
 			PROCESSOR_ARCHITECTURE
 			USERDOMAIN
-			USERPROFILE
 		)
 	end
 
 	def lancarkan
-		p @daftar
+		@daftar.collect! { |i| eVar(i) }
 	end
 end
 
-p PembacaEnvironment.new.lancarkan
+class PemeriksaSpesifikasi < Executor
+	def persiapan
+		@env = PembacaEnvironment.new
+	end
+
+	def lancarkan
+		@env.lancarkan
+		puts " Information Retreive =============== "
+		puts "   Folder Root        #{@env.root} "
+		puts "   Name               #{@env.name}"
+		puts "   Operation System   #{@env.os}"
+		puts "   Mount Location     #{@env.mount}"
+		puts "   Home               #{@env.home}"
+		puts "   Architecture       #{@env.arch}"
+		puts "   Network Label      #{@env.label}"
+		puts " ==================================== "
+	end
+end
