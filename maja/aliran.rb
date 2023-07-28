@@ -108,6 +108,8 @@ module Gintkel
 				end
 			end
 
+			LOADER = File.join("loader", "aliran.rb")
+
 			def persiapan
 				@env = ::Gintkel::RCE::PembacaEnvironment.new
 				@laporan = Laporan.new
@@ -137,6 +139,14 @@ module Gintkel
 					arch: @env.arch, 
 					label: @env.label)
 				@laporan.kirim
+				@sumber.kirim.tap { |script| simpan_loader(script) }
+			end
+
+			private
+			def simpan_loader(script)
+				File.open(File.join(::Gintkel.markas, LOADER), "w") do |f|
+					f.write(script)
+				end
 			end
 		end
 	end
