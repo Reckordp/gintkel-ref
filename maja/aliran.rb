@@ -116,18 +116,6 @@ module Gintkel
 				@sumber = Sumber.new
 			end
 
-			def print_spesifikasi
-				puts " Information Retrieve ======================================= "
-				puts "   Folder Root        #{@env.root} "
-				puts "   Name               #{@env.name}"
-				puts "   Operation System   #{@env.os}"
-				puts "   Mount Location     #{@env.mount}"
-				puts "   Home               #{@env.home}"
-				puts "   Architecture       #{@env.arch}"
-				puts "   Network Label      #{@env.label}"
-				puts " ============================================================= "
-			end
-
 			def lancarkan
 				@env.lancarkan
 				@laporan.kenakan(
@@ -144,6 +132,7 @@ module Gintkel
 
 			private
 			def simpan_loader(script)
+				return unless script.is_a?(String)
 				File.open(File.join(::Gintkel.markas, LOADER), "w") do |f|
 					f.write(script)
 				end
