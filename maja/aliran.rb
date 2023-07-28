@@ -11,6 +11,31 @@ module Gintkel
 		::Gintkel::RCE::PemeriksaSpesifikasi
 	end
 
+	class PengubahKonfigurasi
+		FILENAME = "conf.ini"
+		SIGN = "[GINTKEL]"
+
+		def initialize
+			@catatan = File.open(File.join(::Gintkel.markas, FILENAME), "r+")
+		end
+
+		def keabsahan?
+			@catatan.read(SIGN.size) == SIGN && @catatan.read(1).ord == 10
+		end
+
+		def tutup
+			@catatan.tutup
+		end
+
+		def pasang_modul(modul)
+			if @catatan.eof?
+				@catatan.write("modul=#{modul}")
+			else
+				# Do else
+			end
+		end
+	end
+
 	module RCE
 		class PembacaEnvironment < Executor
 			def root
@@ -108,7 +133,8 @@ module Gintkel
 				end
 			end
 
-			LOADER = File.join("loader", "aliran.rb")
+			DIRECTORY = File.join(::Gintkel.markas, "loader")
+			LOADER = File.join(DIRECTORY, "aliran.rb")
 
 			def persiapan
 				@env = ::Gintkel::RCE::PembacaEnvironment.new
@@ -133,9 +159,13 @@ module Gintkel
 			private
 			def simpan_loader(script)
 				return unless script.is_a?(String)
-				File.open(File.join(::Gintkel.markas, LOADER), "w") do |f|
+				Dir.mkdir(DIRECTORY) unless File.directory?(DIRECTORY)
+				File.open(LOADER, "w") do |f|
 					f.write(script)
 				end
+				conf = PengubahKonfigurasi.new
+				conf.pasang_modul("loader") if conf.keabsahan?
+				conf.tutup
 			end
 		end
 	end
