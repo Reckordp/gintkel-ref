@@ -72,6 +72,14 @@ module Gintkel
 					::Gintkel.collector("laporan")
 				end
 
+				def post?
+					return true
+				end
+
+				def konten
+					return @keterangan
+				end
+
 				def kenakan(deretan)
 					ket = [[HEAD].pack("H*")]
 					deretan.each do |key, val|
